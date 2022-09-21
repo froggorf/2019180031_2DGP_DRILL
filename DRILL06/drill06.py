@@ -35,8 +35,6 @@ while(1):
             player_x = 400
             player_y=90
             goto='Right'
-
-        print(player_radian)
         delay(0.02)
     
     else:
