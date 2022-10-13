@@ -5,7 +5,10 @@ X = 0
 Y = 1
 
 # 함수 정의
+pressA = False
+pressD = False
 def handle_events():
+    global pressA, pressD
     global gameRunning
     events = get_events()
     for event in events:
@@ -16,23 +19,30 @@ def handle_events():
             if event.type == SDL_KEYDOWN:
                 if yoshi.motion != "RIGHT_WALK" and yoshi.motion != "RIGHT_RUN":
                     #if yoshi.motion != "LEFT_WALK":
+                    pressA = True
                     yoshi.dir[X] -= 1
                     stageState.dir[X] -= 1
                     yoshi.change_motion("LEFT_WALK")
             else:
-                yoshi.dir[X] += 1
-                stageState.dir[X] += 1
-                yoshi.change_motion("LEFT_IDLE_01")
+                if pressA:
+                    yoshi.dir[X] += 1
+                    stageState.dir[X] += 1
+                    yoshi.change_motion("LEFT_IDLE_01")
+                    pressA = False
         #D/d 키
         if event.key == SDLK_d:
             if event.type == SDL_KEYDOWN:
-                yoshi.dir[X] += 1
-                stageState.dir[X] += 1
-                yoshi.change_motion("RIGHT_WALK")
+                if yoshi.motion != "LEFT_WALK" and yoshi.motion != "LEFT_RUN":
+                    pressD = True
+                    yoshi.dir[X] += 1
+                    stageState.dir[X] += 1
+                    yoshi.change_motion("RIGHT_WALK")
             else:
-                yoshi.dir[X] -= 1
-                stageState.dir[X] -= 1
-                yoshi.change_motion("RIGHT_IDLE_01")
+                if pressD:
+                    pressD = False
+                    yoshi.dir[X] -= 1
+                    stageState.dir[X] -= 1
+                    yoshi.change_motion("RIGHT_IDLE_01")
         #W/w 키
         if event.key == SDLK_w:
             if event.type == SDL_KEYDOWN:
@@ -60,7 +70,7 @@ def handle_events():
 
 
 # initialization code (초기화 단계)
-width,height =800,600
+width,height = 1600,900
 open_canvas(width,height)
 gameMode = {"START":0, "SELECTSTAGE":1 ,"PLAYSTAGE":2}
 gameRunning = True

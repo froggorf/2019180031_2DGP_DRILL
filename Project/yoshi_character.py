@@ -70,6 +70,8 @@ class Yoshi:
 
     def update(self):
         self.offset = yoshi_offset[yoshi_state[self.state]][yoshi_motion[self.motion]]
+        #if self.dir[X] == 1:
+
         self.sprite_update()
         #self.move()
 
