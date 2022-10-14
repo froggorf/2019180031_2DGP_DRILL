@@ -82,4 +82,3 @@ class Yoshi:
         self.delay = 0
         self.frame = 0
 
-

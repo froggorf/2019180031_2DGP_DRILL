@@ -1,8 +1,8 @@
 from pico2d import *
 
 import game_framework
-#import play_state
-
+import main
+import play_state
 image = None
 
 def enter():
@@ -26,8 +26,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            print('다음으로 넘어가면 됨')
             #game_framework.change_state(play_state)
+            pass
     pass
 
 def draw():
