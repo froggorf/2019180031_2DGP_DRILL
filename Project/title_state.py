@@ -1,21 +1,18 @@
 from pico2d import *
 
 import game_framework
-import main
-import play_state
+#import play_state
+import stage_select_state
 image = None
 
 def enter():
     # fill here
     global image
     image = load_image('title.png')
-    pass
 
 def exit():
-    # fill here
     global image
     del image
-    pass
 
 def handle_events():
     # fill here
@@ -26,13 +23,12 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            #game_framework.change_state(play_state)
-            pass
-    pass
+            game_framework.change_state(stage_select_state)
+
 
 def draw():
     clear_canvas()
-    image.draw(400,300)
+    image.clip_draw(0,0,800,600,get_canvas_width()//2,get_canvas_height()//2,get_canvas_width(),get_canvas_height())
     update_canvas()
 
 def update():

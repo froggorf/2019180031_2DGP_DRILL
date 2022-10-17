@@ -13,14 +13,14 @@ yoshi_delay = [8,8,10,10,8,8,8,8,8]
 yoshi_motion_num = [8,8,5,5,8,8,2,2]
 X = 0
 Y = 1
-
+GRAVITY = 5
 
 class Yoshi:
     def __init__(self):
         self.image = [load_image("yoshi_mario.png")]
         #위치 관련
-        self.x = 150
-        self.y = 150
+        self.x = 253
+        self.y = 320
 
         #상태 관련
         self.state = "MARIO"
@@ -32,6 +32,10 @@ class Yoshi:
         #이동 관련
         self.dir = [0, 0]
         self.speed = 5
+        self.gravity = -5
+
+        #카메라 관련
+        self.camera = [0,0]
 
     #그리기 관련 함수
     def sprite_update(self):
@@ -52,20 +56,17 @@ class Yoshi:
             self.delay += 1
 
     def draw(self):
-        if self.state == "MARIO":
+
+            # elif self.x>
             self.image[yoshi_state[self.state]].clip_draw(
                 self.offset[0]*self.frame,
                 160*yoshi_motion[self.motion],
                 self.offset[0],
                 self.offset[1],
-                self.x+self.offset[0]//2,
-                self.y+self.offset[1]//2
+                self.camera[X]+self.offset[0]//2,
+                self.camera[Y]+self.offset[1]//2
             )
 
-    def move(self):
-        self.x += self.dir[X] * self.speed
-        if yoshi_motion == "RIGHT_RUN" or yoshi_motion == "LEFT_RUN":
-            self.x += self.dir[X] * self.speed
 
 
     def update(self):
@@ -73,12 +74,76 @@ class Yoshi:
         #if self.dir[X] == 1:
 
         self.sprite_update()
-        #self.move()
+        self.calc_gravity()
+        self.move()
+        self.check_camera()
 
+    def check_camera(self):
 
+        from play_state import stageState
+        if self.state == "MARIO":
+            self.camera[X] = stageState.cameraSize[X] // 2
+            self.camera[Y] = stageState.cameraSize[Y] // 2
+            if self.x < stageState.cameraSize[X] // 2:  # 맵 왼편
+                self.camera[X] = self.x
+            if self.y < stageState.cameraSize[Y] // 2:  # 맵 아래편
+                self.camera[Y] = self.y
+
+            # 맵 오른편 위편
+            if self.x > stageState.image[stageState.selectStage].w - stageState.cameraSize[X] // 2:
+                self.camera[X] = stageState.cameraSize[X] - (stageState.image[stageState.selectStage].w - self.x)
+            if self.y > stageState.image[stageState.selectStage].h - stageState.cameraSize[Y] // 2:
+                self.camera[Y] = stageState.cameraSize[Y] - (stageState.image[stageState.selectStage].h - self.y)
 
     def change_motion(self, c_motion):
         self.motion = c_motion
         self.delay = 0
         self.frame = 0
 
+    def calc_gravity(self):
+        global GRAVITY
+        self.y += self.gravity
+        if self.gravity != -GRAVITY:
+            self.gravity -= GRAVITY
+            if self.gravity < -GRAVITY:
+                self.gravity = -GRAVITY
+        from play_state import stageState
+        for rect in stageState.groundRect:
+            if self.myIntersectRect(rect):
+                self.y = rect.top
+        for rect in stageState.stairRect:
+            if self.myIntersectRect(rect):
+                self.y = rect.top
+
+    from stage import myRect
+    def myIntersectRect(self, rect = myRect(-1,0,0,0)):
+        if rect.left == -1: return
+        bVertical = False
+        bHorizontal = False
+
+        if self.x < rect.right and self.x+self.offset[X] > rect.left:
+            bHorizontal=True
+
+        if self.y+self.offset[Y] > rect.bottom and self.y < rect.top:
+            bVertical = True
+
+        if bVertical and bHorizontal:
+            return True
+        else:
+            return False
+
+    def move(self):
+        self.x += self.dir[X] * self.speed
+        if yoshi_motion == "RIGHT_RUN" or yoshi_motion == "LEFT_RUN":
+            self.x += self.dir[X] * self.speed
+        from play_state import stageState
+        for rect in stageState.groundRect:
+            if self.myIntersectRect(rect):
+                if self.dir[X] == 1:
+                    self.x = rect.left - self.offset[X]
+                elif self.dir[X] == -1:
+                    self.x = rect.right
+        if self.x<0:
+            self.x = 0
+        if self.y<0:
+            self.y=0

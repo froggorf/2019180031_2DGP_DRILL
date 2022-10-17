@@ -36,15 +36,16 @@ def exit():
     del yoshi
     del stageState
 
-
 def update():
     yoshi.update()
     stageState.update()
 
 def draw():
     clear_canvas()
-    stageState.draw()
+    stageState.draw(yoshi.x,yoshi.y)
     yoshi.draw()
+    # for rect in stageState.groundRect:
+    #     pico2d.draw_rectangle(rect.left,rect.bottom, rect.right,rect.top)
     update_canvas()
     delay(0.01)
 
@@ -52,8 +53,10 @@ def handle_events():
     global pressA, pressD
     events = get_events()
     for event in events:
-        if event.type == SDL_QUIT or event.key == 96 or event.key == SDLK_ESCAPE:
+        if event.type == SDL_QUIT or event.key == 96:
             game_framework.quit()
+        if event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            game_framework.pop_state()
         #A/a 키
         if event.key == SDLK_a:
             if event.type == SDL_KEYDOWN:
@@ -86,7 +89,7 @@ def handle_events():
         #W/w 키
         if event.key == SDLK_w:
             if event.type == SDL_KEYDOWN:
-                    stageState.dir[Y] += 1
+                pass
             else:
                 stageState.dir[Y] -= 1
         #S/s 키
