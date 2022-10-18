@@ -75,12 +75,18 @@ def handle_events():
                     pressA = True
                     yoshi.dir[X] -= 1
                     stageState.dir[X] -= 1
-                    yoshi.change_motion("LEFT_WALK")
+                    if yoshi.motion == "RIGHT_JUMP" or yoshi.motion=="LEFT_JUMP":
+                        yoshi.change_motion("LEFT_JUMP")
+                    elif yoshi.motion == "RIGHT_FALL" or yoshi.motion == "LEFT_FALL":
+                        yoshi.change_motion("LEFT_FALL")
+                    else:
+                        yoshi.change_motion("LEFT_WALK")
             else:
                 if pressA:
                     yoshi.dir[X] += 1
                     stageState.dir[X] += 1
-                    yoshi.change_motion("LEFT_IDLE_01")
+                    if yoshi.motion != "RIGHT_JUMP" and yoshi.motion != "LEFT_JUMP" and yoshi.motion!="RIGHT_FALL" and yoshi.motion!="LEFT_FALL":
+                        yoshi.change_motion("LEFT_IDLE_01")
                     pressA = False
         #D/d 키
         if event.key == SDLK_d:
@@ -89,19 +95,34 @@ def handle_events():
                     pressD = True
                     yoshi.dir[X] += 1
                     stageState.dir[X] += 1
-                    yoshi.change_motion("RIGHT_WALK")
+                    if yoshi.motion == "RIGHT_JUMP" or yoshi.motion=="LEFT_JUMP":
+                        yoshi.change_motion("RIGHT_JUMP")
+                    elif yoshi.motion == "RIGHT_FALL" or yoshi.motion == "LEFT_FALL":
+                        yoshi.change_motion("RIGHT_FALL")
+                    else:
+                        yoshi.change_motion("RIGHT_WALK")
             else:
                 if pressD:
                     pressD = False
                     yoshi.dir[X] -= 1
                     stageState.dir[X] -= 1
-                    yoshi.change_motion("RIGHT_IDLE_01")
+                    if yoshi.motion != "RIGHT_JUMP" and yoshi.motion != "LEFT_JUMP" and yoshi.motion!="RIGHT_FALL" and yoshi.motion!="LEFT_FALL":
+                        yoshi.change_motion("RIGHT_IDLE_01")
         #W/w 키
         if event.key == SDLK_w:
             if event.type == SDL_KEYDOWN:
-                pass
+                if yoshi.motion != "RIGHT_FALL" and yoshi.motion!="LEFT_FALL":
+                    yoshi.pressJump += 1
+                    if yoshi.motion == "RIGHT_IDLE_01" or yoshi.motion == "RIGHT_IDLE_02" or yoshi.motion == "RIGHT_WALK" or yoshi.motion == "RIGHT_RUN" or yoshi.motion == "RIGHT_JUMP":
+                        yoshi.change_motion("RIGHT_JUMP")
+                    else:
+                        yoshi.change_motion("LEFT_JUMP")
             else:
-                pass
+                yoshi.pressJump = 0
+                if yoshi.motion == "RIGHT_IDLE_01" or yoshi.motion == "RIGHT_IDLE_02" or yoshi.motion == "RIGHT_WALK" or yoshi.motion == "RIGHT_RUN" or yoshi.motion == "RIGHT_JUMP" or yoshi.motion == "RIGHT_FALL":
+                    yoshi.change_motion("RIGHT_FALL")
+                else:
+                    yoshi.change_motion("LEFT_FALL")
         #S/s 키
         if event.key == SDLK_s:
             if event.type == SDL_KEYDOWN:
