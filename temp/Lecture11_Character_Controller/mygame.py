@@ -1,9 +1,7 @@
-import pico2d
 import game_framework
+import pico2d
 
-import logo_state
 import play_state
-import item_state
 
 
 pico2d.open_canvas()
