@@ -1,14 +1,14 @@
 from pico2d import *
 import game_framework
 import game_world
-
+from bird import Bird
 from grass import Grass
 from boy import Boy
 
 
 boy = None
 grass = None
-
+birds = None
 def handle_events():
     events = get_events()
     for event in events:
@@ -25,9 +25,13 @@ def enter():
     global boy, grass
     boy = Boy()
     grass = Grass()
+    #birds = [Bird() for i in range(10)]
     game_world.add_object(grass, 0)
     game_world.add_object(boy, 1)
-
+    for i in range(10):
+        birds = Bird()
+        game_world.add_object(birds, 1)
+    #game_world.add_object(birds,1)
 
 # 종료
 def exit():
@@ -36,6 +40,7 @@ def exit():
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
+    delay(0.01)
 
 def draw_world():
     for game_object in game_world.all_objects():
