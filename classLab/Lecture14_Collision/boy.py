@@ -132,6 +132,7 @@ class Boy:
 
     def draw(self):
         self.cur_state.draw(self)
+        draw_rectangle(*self.get_bb())
 
     def add_event(self, event):
         self.event_que.insert(0, event)
@@ -145,3 +146,9 @@ class Boy:
         print('FIRE BALL')
         ball = Ball(self.x, self.y, self.face_dir*2)
         game_world.add_object(ball, 1)
+
+    def get_bb(self):
+        return self.x - 25, self.y - 40, self.x + 25, self.y + 40
+
+    def handle_collision(self, other, group):
+        print('boy meets ball')
